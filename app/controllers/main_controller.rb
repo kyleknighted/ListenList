@@ -31,6 +31,23 @@ class MainController < ApplicationController
     end
   end
 
+  def remove
+    case params[:type]
+      when 'artist'
+        data = Artist.find(params[:id])
+      when 'track'
+        data = Track.find(params[:id])
+      when 'album'
+        data = Album.find(params[:id])
+    end
+
+    data.destroy
+
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+  end
+
   private
 
   def parse_data(json, type)

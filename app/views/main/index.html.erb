@@ -44,7 +44,7 @@
                 <td><%= artist.name %></td>
                 <td>
                   <a href="<%= artist.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
-                  <a href="#" data-remove="<%= artist.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+                  <a href="#" data-remove="artist:<%= artist.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
                 </td>
               </tr>
               <% end %>
@@ -74,7 +74,7 @@
                 <td><%= track.artist_name %></td>
                 <td>
                   <a href="<%= track.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
-                  <a href="#" data-remove="<%= track.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+                  <a href="#" data-remove="track:<%= track.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
                 </td>
               </tr>
               <% end %>
@@ -104,7 +104,7 @@
                 <td><%= album.artist_name %></td>
                 <td>
                   <a href="<%= album.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
-                  <a href="#" data-remove="<%= album.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+                  <a href="#" data-remove="album:<%= album.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
                 </td>
               </tr>
               <% end %>

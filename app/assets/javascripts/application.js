@@ -92,40 +92,62 @@ $('#save-search').click(function(e){
   query = $('input.search-query').val();
 
   $.ajax({
-      type: "POST",
-      url: "/add",
-      data: {type: type, query: query},
-      dataType: "json",
-      success: function(response){
-        switch (type) {
-          case 'artist':
-            artist = response.results.artists[0]
-            $('#artist-list tbody').append('<tr><td>'+artist.name+'</td><td>'+artist.artists[0].name
-              + '</td><td><a href="'+artist.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
-              + '<a href="#" data-remove="'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
-              + '</td></tr>');
-            break;
+    type: "POST",
+    url: "/add",
+    data: {type: type, query: query},
+    dataType: "json",
+    success: function(response){
+      switch (type) {
+        case 'artist':
+          artist = response.results.artists[0]
+          $('#artist-list tbody').append('<tr><td>'+artist.name+'</td><td>'+artist.artists[0].name
+            + '</td><td><a href="'+artist.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+            + '<a href="#" data-remove="artist:'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+            + '</td></tr>');
+          break;
 
-          case 'track':
-            track = response.results.tracks[0]
-            $('#track-list tbody').append('<tr><td>'+track.name+'</td><td>'+track.artists[0].name
-              + '</td><td><a href="'+track.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
-              + '<a href="#" data-remove="'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
-              + '</td></tr>');
-            break;
+        case 'track':
+          track = response.results.tracks[0]
+          $('#track-list tbody').append('<tr><td>'+track.name+'</td><td>'+track.artists[0].name
+            + '</td><td><a href="'+track.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+            + '<a href="#" data-remove="track:'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+            + '</td></tr>');
+          break;
 
-          case 'album':
-            console.log(response);
-            album = response.results.albums[0]
-            $('#album-list tbody').append('<tr><td>'+album.name+'</td><td>'+album.artists[0].name
-              + '</td><td><a href="'+album.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
-              + '<a href="#" data-remove="'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
-              + '</td></tr>');
-            break;
-        }
-      },
-      error: function(response){
-        $('#spotify-search').after();
+        case 'album':
+          console.log(response);
+          album = response.results.albums[0]
+          $('#album-list tbody').append('<tr><td>'+album.name+'</td><td>'+album.artists[0].name
+            + '</td><td><a href="'+album.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+            + '<a href="#" data-remove="album:'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+            + '</td></tr>');
+          break;
       }
-    });
+    },
+    error: function(response){
+      $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error adding your "+type+". Please try again in a few moments.</div>");
+    }
+  });
+});
+
+$('a[data-remove]').on('click', function(e){
+  e.preventDefault();
+
+  $this = $(this);
+  data = $this.data('remove');
+  type = data.split(':')[0];
+  id = data.split(':')[1];
+
+  $.ajax({
+    type: "DELETE",
+    url: "/remove",
+    data: {type: type, id: id},
+    dataType: "json",
+    success: function(response){
+      $this.parents('tr').fadeOut();
+    },
+    error: function(response){
+      $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error removing your "+type+". Please try again in a few moments.</div>");
+    }
+  });
 });

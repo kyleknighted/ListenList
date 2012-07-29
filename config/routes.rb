@@ -1,12 +1,4 @@
 ListenList::Application.routes.draw do
-  resources :albums
-
-  resources :create_albums
-
-  resources :artists
-
-  resources :tracks
-
   root :to => 'main#index'
 
   match '/auth/:provider/callback', to: 'sessions#create'
@@ -15,4 +7,5 @@ ListenList::Application.routes.draw do
   match "/about" => "main#about"
 
   post '/add' => 'main#add'
+  delete '/remove' => 'main#remove'
 end
