@@ -1,0 +1,125 @@
+<%= render :partial => 'main/global/header' %>
+
+<div class="container-fluid">
+  <div class="row-fluid">
+      <% if current_user %>
+        <form class="well form-horizontal" id="spotify-search" action="" method="get">
+          <div class="control-group">
+            <label class="control-label" for="query">Search</label>
+            <div class="controls">
+              <input type="text" class="input-medium search-query" name="query" data-provide="typeahead" autocomplete="off">
+              <i class="icon-refresh" id="loading-query" style="display:none"></i>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="search-type">Type</label>
+            <div class="controls">
+              <label class="radio inline">
+                <input type="radio" name="search-type" id="type-artist" value="artist" checked> Artist
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="search-type" id="type-track" value="track"> Track
+              </label>
+              <label class="radio inline">
+                <input type="radio" name="search-type" id="type-album" value="album"> Album
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="save-search">Save Artist</button>
+        </form>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+        <% unless @artists.empty? %>
+          <table id="artist-list" class="table table-striped">
+            <thead>
+              <tr>
+                <th>Artist</th>
+                <th>URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @artists.each do |artist| %>
+              <tr>
+                <td><%= artist.name %></td>
+                <td><%= artist.spotify_uri %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="alert alert-error">
+            <strong>Oh noes!</strong> You haven't added any Artists yet!
+          </div>
+        <% end %>
+        </div>
+
+        <div class="span4">
+        <% unless @tracks.empty? %>
+          <table id="track-list" class="table table-striped">
+            <thead>
+              <tr>
+                <th>Track</th>
+                <th>Artist</th>
+                <th>URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @tracks.each do |track| %>
+              <tr>
+                <td><%= track.name %></td>
+                <td><%= track.artist_name %></td>
+                <td><%= track.spotify_uri %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="alert alert-error">
+            <strong>Oh noes!</strong> You haven't added any Tracks yet!
+          </div>
+        <% end %>
+        </div>
+
+        <div class="span4">
+        <% unless @albums.empty? %>
+          <table id="album-list" class="table table-striped">
+            <thead>
+              <tr>
+                <th>Album</th>
+                <th>Artist</th>
+                <th>URL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @albums.each do |album| %>
+              <tr>
+                <td><%= album.name %></td>
+                <td><%= album.artist_name %></td>
+                <td><%= album.spotify_uri %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="alert alert-error">
+            <strong>Oh noes!</strong> You haven't added any Albums yet!
+          </div>
+        <% end %>
+        </div>
+
+      <% else %>
+        <div class="hero-unit">
+          <h1>Welcome to ListenList</h1>
+          <p>Sign-in above with your Twitter account and begin adding the artists, songs, and albms that you want to listen to!</p>
+          <p><a class="btn btn-primary btn-large" href="/about" data-toggle="modal">Learn more &raquo;</a></p>
+        </div>
+      <% end %>
+
+  </div><!--/row-->
+
+  <hr>
+
+  <%= render :partial => 'main/global/footer' %>
+
+</div><!--/.fluid-container-->
