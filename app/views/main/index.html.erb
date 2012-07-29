@@ -35,14 +35,17 @@
             <thead>
               <tr>
                 <th>Artist</th>
-                <th>URL</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <% @artists.each do |artist| %>
               <tr>
                 <td><%= artist.name %></td>
-                <td><%= artist.spotify_uri %></td>
+                <td>
+                  <a href="<%= artist.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
+                  <a href="#" data-remove="<%= artist.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+                </td>
               </tr>
               <% end %>
             </tbody>
@@ -59,9 +62,9 @@
           <table id="track-list" class="table table-striped">
             <thead>
               <tr>
-                <th>Track</th>
+                <th style="width:40%">Track</th>
                 <th>Artist</th>
-                <th>URL</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -69,7 +72,10 @@
               <tr>
                 <td><%= track.name %></td>
                 <td><%= track.artist_name %></td>
-                <td><%= track.spotify_uri %></td>
+                <td>
+                  <a href="<%= track.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
+                  <a href="#" data-remove="<%= track.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+                </td>
               </tr>
               <% end %>
             </tbody>
@@ -86,9 +92,9 @@
           <table id="album-list" class="table table-striped">
             <thead>
               <tr>
-                <th>Album</th>
+                <th style="width:40%">Album</th>
                 <th>Artist</th>
-                <th>URL</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -96,7 +102,10 @@
               <tr>
                 <td><%= album.name %></td>
                 <td><%= album.artist_name %></td>
-                <td><%= album.spotify_uri %></td>
+                <td>
+                  <a href="<%= album.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
+                  <a href="#" data-remove="<%= album.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+                </td>
               </tr>
               <% end %>
             </tbody>

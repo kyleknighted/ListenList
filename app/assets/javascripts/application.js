@@ -99,22 +99,30 @@ $('#save-search').click(function(e){
       success: function(response){
         switch (type) {
           case 'artist':
-          console.log(response.results);
-            $('#artist-list tbody').append('<tr><td>'+response.results.artists[0].name+'</td><td>'+response.results.artists[0].href+'</td></tr>');
+            artist = response.results.artists[0]
+            $('#artist-list tbody').append('<tr><td>'+artist.name+'</td><td>'+artist.artists[0].name
+              + '</td><td><a href="'+artist.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+              + '<a href="#" data-remove="'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+              + '</td></tr>');
             break;
 
           case 'track':
-            console.log(response.results.tracks[0]);
-            $('#track-list tbody').append('<tr><td>'+response.results.tracks[0].name+'</td><td>'+response.results.tracks[0].artists[0].name+'</td><td>'+response.results.tracks[0].href+'</td></tr>');
+            track = response.results.tracks[0]
+            $('#track-list tbody').append('<tr><td>'+track.name+'</td><td>'+track.artists[0].name
+              + '</td><td><a href="'+track.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+              + '<a href="#" data-remove="'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+              + '</td></tr>');
             break;
 
           case 'album':
-            console.log(response.results.albums[0]);
-            $('#album-list tbody').append('<tr><td>'+response.results.albums[0].name+'</td><td>'+response.results.albums[0].artists[0].name+'</td><td>'+response.results.albums[0].href+'</td></tr>');
+            console.log(response);
+            album = response.results.albums[0]
+            $('#album-list tbody').append('<tr><td>'+album.name+'</td><td>'+album.artists[0].name
+              + '</td><td><a href="'+album.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+              + '<a href="#" data-remove="'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+              + '</td></tr>');
             break;
         }
-
-        // console.log(response.results.tracks[0]);
       },
       error: function(response){
         $('#spotify-search').after();
