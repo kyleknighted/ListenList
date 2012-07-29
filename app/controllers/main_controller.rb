@@ -22,24 +22,26 @@ class MainController < ApplicationController
     response = RestClient.get "http://ws.spotify.com/search/1/" + params[:type] + ".json", { :params => { :q => query } }
     json = ActiveSupport::JSON.decode(response)
 
-    result = parse_data(json, params[:type])
+    name = json["#{params[:type]}s"][0]['name']
+    href = json["#{params[:type]}s"][0]['href']
+    artist = json["#{params[:type]}s"][0]['artists'] ? json["#{params[:type]}s"][0]['artists'][0]['name'] : ''
 
-    if result.save
-      respond_to do |format|
-        format.json { render json: { :results => json, :id => result.id } }
-      end
+    new_data = parse_data(name, href, artist, params[:type])
+
+    if new_data.save
+      render :json => { :results => { :href => href, :name => name, :artist => artist }, :id => new_data.id }
     end
   end
 
   def remove
-    case params[:type]
-      when 'artist'
-        data = Artist.find(params[:id])
-      when 'track'
-        data = Track.find(params[:id])
-      when 'album'
-        data = Album.find(params[:id])
-    end
+    data = case params[:type]
+           when 'artist'
+             Artist.find(params[:id])
+           when 'track'
+             Track.find(params[:id])
+           when 'album'
+             Album.find(params[:id])
+           end
 
     data.destroy
 
@@ -50,26 +52,15 @@ class MainController < ApplicationController
 
   private
 
-  def parse_data(json, type)
+  def parse_data(name, href, artist, type)
     case type
       when 'artist'
-        href = json['artists'].first['href']
-        name = json['artists'].first['name']
-
         Artist.new({:name => name, :spotify_uri => href, :user_id => current_user.id})
 
       when 'track'
-        href = json['tracks'].first['href']
-        name = json['tracks'].first['name']
-        artist = json['tracks'].first['artists'][0]['name']
-
         Track.new({:name => name, :artist_name => artist, :spotify_uri => href, :user_id => current_user.id})
 
       when 'album'
-        href = json['albums'][0]['href']
-        name = json['albums'][0]['name']
-        artist = json['albums'][0]['artists'][0]['name']
-
         Album.new({:name => name, :artist_name => artist, :spotify_uri => href, :user_id => current_user.id})
 
     end

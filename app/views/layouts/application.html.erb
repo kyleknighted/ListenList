@@ -10,23 +10,5 @@
   <%= yield %>
 
   <%= javascript_include_tag "application" %>
-  <script>
-  $(function() {
-    $('a[data-toggle="modal"]').click(function(e) {
-      e.preventDefault();
-      var href = $(this).attr('href');
-      // console.log(href);
-      if (href.indexOf('#') == 0) {
-        $(href).modal('open');
-      } else {
-        $.get(href, function(data) {
-          modal = '<div class="modal hide" id="url-modal"><div class="modal-body"><button type="button" class="close" data-dismiss="modal">×</button>'+data+'</div></div>';
-          $(modal).appendTo('body');
-          $('#url-modal').modal('show');
-        });
-      }
-    });
-  });
-  </script>
 </body>
 </html>

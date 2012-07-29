@@ -97,31 +97,26 @@ $('#save-search').click(function(e){
     data: {type: type, query: query},
     dataType: "json",
     success: function(response){
-      switch (type) {
-        case 'artist':
-          artist = response.results.artists[0]
-          $('#artist-list tbody').append('<tr><td>'+artist.name+'</td><td>'+artist.artists[0].name
-            + '</td><td><a href="'+artist.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
-            + '<a href="#" data-remove="artist:'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
-            + '</td></tr>');
-          break;
 
-        case 'track':
-          track = response.results.tracks[0]
-          $('#track-list tbody').append('<tr><td>'+track.name+'</td><td>'+track.artists[0].name
-            + '</td><td><a href="'+track.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
-            + '<a href="#" data-remove="track:'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
-            + '</td></tr>');
-          break;
+      var name = response.results.name,
+          artist = response.results.artist,
+          href = response.results.href,
+          id = response.id;
 
-        case 'album':
-          console.log(response);
-          album = response.results.albums[0]
-          $('#album-list tbody').append('<tr><td>'+album.name+'</td><td>'+album.artists[0].name
-            + '</td><td><a href="'+album.href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
-            + '<a href="#" data-remove="album:'+response.id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
-            + '</td></tr>');
-          break;
+      new_listing = '<tr><td>'+name+'</td>';
+
+      if( artist.length > 0 )
+        new_listing += '<td>'+artist+'</td>';
+
+      new_listing += '<td><a href="'+href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+      new_listing += '<a href="#" data-remove="'+type+':'+id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+      new_listing += '</td></tr>';
+
+      $('#'+type+'-list tbody').append(new_listing);
+
+      if( $('#'+type+'-list').hasClass('hide') ){
+        $('#'+type+'-list').removeClass('hide');
+        $('#'+type+'-none').addClass('hide');
       }
     },
     error: function(response){
@@ -144,10 +139,30 @@ $('a[data-remove]').on('click', function(e){
     data: {type: type, id: id},
     dataType: "json",
     success: function(response){
-      $this.parents('tr').fadeOut();
+      $this.parents('tr').fadeOut(400, function(){
+        $this.parents('tr').remove();
+        if( $('#'+type+'-list tbody tr').length === 0 ) {
+          $('#'+type+'-list').addClass('hide');
+          $('#'+type+'-none').removeClass('hide');
+        }
+      });
     },
     error: function(response){
       $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error removing your "+type+". Please try again in a few moments.</div>");
     }
   });
+});
+
+$('a[data-toggle="modal"]').click(function(e) {
+  e.preventDefault();
+  var href = $(this).attr('href');
+  if (href.indexOf('#') == 0) {
+    $(href).modal('open');
+  } else {
+    $.get(href, function(data) {
+      modal = '<div class="modal hide" id="url-modal"><div class="modal-body"><button type="button" class="close" data-dismiss="modal">×</button>'+data+'</div></div>';
+      $(modal).appendTo('body');
+      $('#url-modal').modal('show');
+    });
+  }
 });
