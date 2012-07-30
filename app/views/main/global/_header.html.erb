@@ -17,13 +17,13 @@
             <li><%= link_to "Sign Out", signout_path %></li>
           </ul>
         <% else %>
-          <%= link_to "<i class=\"icon-user\"></i> Sign In".html_safe, "/auth/twitter", :class => "btn dropdown-toggle", :data => { :toggle => "dropdown" } %>
+          <%= link_to "<i class=\"icon-user\"></i> Sign In".html_safe, "/auth/twitter", :class => "btn dropdown-toggle" %>
         <% end %>
       </div>
       <div class="nav-collapse">
         <ul class="nav">
           <li class="active"><a href="#">Home</a></li>
-          <li><a href="/about" data-toggle="modal">About</a></li>
+          <li><a href="about" data-toggle="modal">About</a></li>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

@@ -14,7 +14,7 @@ class MainController < ApplicationController
 
   def add
     if params[:type] == 'track' || params[:type] == 'album'
-      query = params[:query].split('::')[0]
+      query = params[:query].split(' :: ')[0]
     else
       query = params[:query]
     end
@@ -30,6 +30,23 @@ class MainController < ApplicationController
 
     if new_data.save
       render :json => { :results => { :href => href, :name => name, :artist => artist }, :id => new_data.id }
+    end
+  end
+
+  def listen
+    data = case params[:type]
+           when 'artist'
+             Artist.find_by_spotify_uri(params[:uri])
+           when 'track'
+             Track.find_by_spotify_uri(params[:uri])
+           when 'album'
+             Album.find_by_spotify_uri(params[:uri])
+           end
+
+    data.update_attribute(:listened_to, true)
+
+    if data.save
+      render :json => { :listened_to => true }
     end
   end
 

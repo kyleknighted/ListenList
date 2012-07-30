@@ -7,5 +7,6 @@ ListenList::Application.routes.draw do
   match "/about" => "main#about"
 
   post '/add' => 'main#add'
+  post '/listen' => 'main#listen'
   delete '/remove' => 'main#remove'
 end

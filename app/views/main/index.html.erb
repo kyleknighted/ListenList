@@ -8,7 +8,7 @@
             <label class="control-label" for="query">Search</label>
             <div class="controls">
               <input type="text" class="input-medium search-query" name="query" data-provide="typeahead" autocomplete="off">
-              <i class="icon-refresh" id="loading-query" style="display:none"></i>
+              <i class="icon-refresh" id="loading-query"></i>
             </div>
           </div>
           <div class="control-group">
@@ -39,10 +39,10 @@
             </thead>
             <tbody>
               <% @artists.each do |artist| %>
-              <tr>
+              <tr <% if artist.listened_to %>class="listened"<% end %>>
                 <td><%= artist.name %></td>
                 <td>
-                  <a href="<%= artist.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
+                  <a href="<%= artist.spotify_uri %>" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a>
                   <a href="#" data-remove="artist:<%= artist.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
                 </td>
               </tr>
@@ -66,11 +66,11 @@
             </thead>
             <tbody>
               <% @tracks.each do |track| %>
-              <tr>
+              <tr <% if track.listened_to %>class="listened"<% end %>>
                 <td><%= track.name %></td>
                 <td><%= track.artist_name %></td>
                 <td>
-                  <a href="<%= track.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
+                  <a href="<%= track.spotify_uri %>" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a>
                   <a href="#" data-remove="track:<%= track.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
                 </td>
               </tr>
@@ -94,11 +94,11 @@
             </thead>
             <tbody>
               <% @albums.each do |album| %>
-              <tr>
+              <tr <% if album.listened_to %>class="listened"<% end %>>
                 <td><%= album.name %></td>
                 <td><%= album.artist_name %></td>
                 <td>
-                  <a href="<%= album.spotify_uri %>" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a>
+                  <a href="<%= album.spotify_uri %>" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a>
                   <a href="#" data-remove="album:<%= album.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
                 </td>
               </tr>

@@ -25,6 +25,7 @@ var autocomplete = $('input.search-query').typeahead()
     if( $.inArray(ev.keyCode,[40,38,9,13,27]) === -1 ){
 
       var self = $(this);
+      $('#loading-query').show();
 
       self.data('typeahead').source = [];
 
@@ -40,7 +41,7 @@ var autocomplete = $('input.search-query').typeahead()
 
         //set this to true when your callback executes
         self.data('active',true);
-        $('#loading-query').show();
+
 
         var arr = [];
 
@@ -90,6 +91,7 @@ $('#save-search').click(function(e){
   e.preventDefault();
   type = $('input[name="search-type"]:checked').val();
   query = $('input.search-query').val();
+  $('#loading-query').show();
 
   $.ajax({
     type: "POST",
@@ -108,7 +110,7 @@ $('#save-search').click(function(e){
       if( artist.length > 0 )
         new_listing += '<td>'+artist+'</td>';
 
-      new_listing += '<td><a href="'+href+'" class="btn btn-primary btn-mini"><i class="icon-play icon-white"></i> Play</a> '
+      new_listing += '<td><a href="'+href+'" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a> '
       new_listing += '<a href="#" data-remove="'+type+':'+id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
       new_listing += '</td></tr>';
 
@@ -118,6 +120,7 @@ $('#save-search').click(function(e){
         $('#'+type+'-list').removeClass('hide');
         $('#'+type+'-none').addClass('hide');
       }
+      $('#loading-query').hide();
     },
     error: function(response){
       $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error adding your "+type+". Please try again in a few moments.</div>");
@@ -125,8 +128,9 @@ $('#save-search').click(function(e){
   });
 });
 
-$('a[data-remove]').on('click', function(e){
+$('a[data-remove]').live('click', function(e){
   e.preventDefault();
+  $('#loading-query').show();
 
   $this = $(this);
   data = $this.data('remove');
@@ -145,6 +149,7 @@ $('a[data-remove]').on('click', function(e){
           $('#'+type+'-list').addClass('hide');
           $('#'+type+'-none').removeClass('hide');
         }
+        $('#loading-query').hide();
       });
     },
     error: function(response){
@@ -165,4 +170,27 @@ $('a[data-toggle="modal"]').click(function(e) {
       $('#url-modal').modal('show');
     });
   }
+});
+
+$('a.play-button').live('click', function(e){
+  e.preventDefault();
+
+  $this = $(this);
+  uri = $this.attr('href');
+  type = $this.attr('href').split(':')[1];
+
+  $.ajax({
+    type: "post",
+    url: "/listen",
+    data: {type: type, uri: uri},
+    dataType: "json",
+    success: function(response){
+      console.log(response.listened_to);
+      $this.parents('tr').addClass('listened');
+      window.location = uri;
+    },
+    error: function(response){
+      $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error listening to your "+type+". Please try again in a few moments.</div>");
+    }
+  });
 });

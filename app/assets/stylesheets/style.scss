@@ -11,3 +11,28 @@ body {
 #save-search {
   text-transform: capitalize;
 }
+table {
+  tbody {
+    tr.listened {
+      td {
+        text-decoration: line-through;
+      }
+      td:last-child {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform:rotate(0deg); }
+  100% { -webkit-transform:rotate(360deg); }
+}
+@-webkit-keyframes spinoff {
+  0% { -webkit-transform:rotate(0deg); }
+  100% { -webkit-transform:rotate(-360deg); }
+}
+#loading-query {
+  -webkit-animation:spin 1.5s infinite linear;
+  display: none;
+}
