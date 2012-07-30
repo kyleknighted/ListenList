@@ -5,7 +5,7 @@ class CreateAlbums < ActiveRecord::Migration
       t.string :artist_name
       t.string :spotify_uri
       t.string :spotify_url
-      t.boolean :listened_to, :default => 0
+      t.boolean :listened_to, :default => false
       t.integer :user_id
 
       t.timestamps
