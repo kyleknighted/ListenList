@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.2'
 
 gem 'mysql2', "~> 0.3.11"
+# postgres for Heroku
+gem "pg", "~> 0.14.0"
 
 # Gems used only for assets and not required
 # in production environments by default.
