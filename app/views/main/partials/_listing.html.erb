@@ -1,0 +1,25 @@
+<table id="<%= type %>-list" class="table table-striped <% if object.empty? %>hide<% end %>">
+  <thead>
+    <tr>
+      <th><%= type.titleize %></th>
+      <% if defined?(object.first.artist_name) %><th>Artist</th><% end %>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% object.each do |data| %>
+    <tr <% if data.listened_to %>class="listened"<% end %>>
+      <td><%= data.name %></td>
+      <% if defined?(data.artist_name) %><td><%= data.artist_name %></td><% end %>
+      <td>
+        <a href="<%= data.spotify_uri %>" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a>
+        <a href="#" data-remove="<%= type %>:<%= data.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="alert alert-error <% unless object.empty? %>hide<% end %>" id="<%= type %>-none">
+  <strong>Oh noes!</strong> You haven't added any <%= type.titleize %>s yet!
+</div>
