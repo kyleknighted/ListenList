@@ -1,7 +1,7 @@
 class MainController < ApplicationController
 
   def index
-    if current_user
+    if current_user.present?
       @artists = current_user.artists
       @tracks = current_user.tracks
       @albums = current_user.albums
