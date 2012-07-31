@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <th><%= type.titleize %></th>
-      <% if defined?(object.first.artist_name) %><th>Artist</th><% end %>
+      <% if object.has_artist? %><th>Artist</th><% end %>
       <th>Actions</th>
     </tr>
   </thead>
@@ -10,7 +10,7 @@
     <% object.each do |data| %>
     <tr <% if data.listened_to %>class="listened"<% end %>>
       <td><%= data.name %></td>
-      <% if defined?(data.artist_name) %><td><%= data.artist_name %></td><% end %>
+      <% if object.has_artist? %><td><%= data.artist_name %></td><% end %>
       <td>
         <a href="<%= data.spotify_uri %>" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a>
         <a href="#" data-remove="<%= type %>:<%= data.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
