@@ -22,7 +22,8 @@ class MainController < ApplicationController
     type_class = params[:type].camelize.constantize
     created = type_class.create_from_spotify(query)
 
-    hash = created[:artist].empty? ? {:name => created[:name], :spotify_uri => created[:href], :user_id => current_user.id} : {:name => created[:name], :artist_name => created[:artist], :spotify_uri => created[:href], :user_id => current_user.id}
+    hash = {:name => created[:name], :spotify_uri => created[:href], :user_id => current_user.id}
+    hash[:artist_name] = created[:artist] if !created[:artist].empty?
     new_data = type_class.new(hash)
 
     if new_data.save
