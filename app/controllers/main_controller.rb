@@ -13,73 +13,40 @@ class MainController < ApplicationController
   end
 
   def add
-    if params[:type] == 'track' || params[:type] == 'album'
+    if ['album', 'track'].include? params[:type]
       query = params[:query].split(' :: ')[0]
     else
       query = params[:query]
     end
 
-    response = RestClient.get "http://ws.spotify.com/search/1/" + params[:type] + ".json", { :params => { :q => query } }
-    json = ActiveSupport::JSON.decode(response)
+    type_class = params[:type].camelize.constantize
 
-    name = json["#{params[:type]}s"][0]['name']
-    href = json["#{params[:type]}s"][0]['href']
-    artist = json["#{params[:type]}s"][0]['artists'] ? json["#{params[:type]}s"][0]['artists'][0]['name'] : ''
-
-    new_data = parse_data(name, href, artist, params[:type])
+    created = type_class.create_from_spotify(query)
+    p created[:name]
+    new_data = type_class.new({:name => created[:name], :artist_name => created[:artist], :spotify_uri => created[:href], :user_id => current_user.id})
 
     if new_data.save
-      render :json => { :results => { :href => href, :name => name, :artist => artist }, :id => new_data.id }
+      render :json => { :results => { :name => created[:name], :artist => created[:artist], :href => created[:href] }, :id => new_data.id }
     end
   end
 
   def listen
-    data = case params[:type]
-           when 'artist'
-             Artist.find_by_spotify_uri(params[:uri])
-           when 'track'
-             Track.find_by_spotify_uri(params[:uri])
-           when 'album'
-             Album.find_by_spotify_uri(params[:uri])
-           end
+    #TODO: verify that it only marks off current_user and not others
+    #TODO: pass specific ID instead of generic URI
+    data = params[:type].camelize.constantize.find_by_spotify_uri(params[:uri])
 
-    data.update_attribute(:listened_to, true)
-
-    if data.save
+    if data.update_attribute(:listened_to, true)
       render :json => { :listened_to => true }
     end
   end
 
   def remove
-    data = case params[:type]
-           when 'artist'
-             Artist.find(params[:id])
-           when 'track'
-             Track.find(params[:id])
-           when 'album'
-             Album.find(params[:id])
-           end
+    data = params[:type].camelize.constantize.find(params[:id])
 
     data.destroy
 
     respond_to do |format|
       format.json { head :no_content }
-    end
-  end
-
-  private
-
-  def parse_data(name, href, artist, type)
-    case type
-      when 'artist'
-        Artist.new({:name => name, :spotify_uri => href, :user_id => current_user.id})
-
-      when 'track'
-        Track.new({:name => name, :artist_name => artist, :spotify_uri => href, :user_id => current_user.id})
-
-      when 'album'
-        Album.new({:name => name, :artist_name => artist, :spotify_uri => href, :user_id => current_user.id})
-
     end
   end
 
