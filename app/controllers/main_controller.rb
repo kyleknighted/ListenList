@@ -20,10 +20,10 @@ class MainController < ApplicationController
     end
 
     type_class = params[:type].camelize.constantize
-
     created = type_class.create_from_spotify(query)
-    p created[:name]
-    new_data = type_class.new({:name => created[:name], :artist_name => created[:artist], :spotify_uri => created[:href], :user_id => current_user.id})
+
+    hash = created[:artist].empty? ? {:name => created[:name], :spotify_uri => created[:href], :user_id => current_user.id} : {:name => created[:name], :artist_name => created[:artist], :spotify_uri => created[:href], :user_id => current_user.id}
+    new_data = type_class.new(hash)
 
     if new_data.save
       render :json => { :results => { :name => created[:name], :artist => created[:artist], :href => created[:href] }, :id => new_data.id }

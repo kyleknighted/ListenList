@@ -7,7 +7,7 @@ class Artist < ActiveRecord::Base
 
     name = json["artists"][0]['name']
     href = json["artists"][0]['href']
-    artist = json["tracks"][0]['artists'] ? json["tracks"][0]['artists'][0]['name'] : ''
+    artist = json["artists"][0]['artists'] ? json["artists"][0]['artists'][0]['name'] : ''
 
     {:name => name, :artist => artist, :spotify_uri => href}
   end
