@@ -11,5 +11,4 @@ class Artist < ActiveRecord::Base
 
     {:name => name, :artist => artist, :spotify_uri => href}
   end
-
 end
