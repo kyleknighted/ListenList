@@ -15,6 +15,20 @@
 //= require_tree .
 //= require bootstrap
 
+$('a[data-toggle="modal"]').click(function(e) {
+  e.preventDefault();
+  var href = $(this).attr('href');
+  if (href.indexOf('#') == 0) {
+    $(href).modal('open');
+  } else {
+    $.get(href, function(data) {
+      modal = '<div class="modal hide" id="url-modal"><div class="modal-body"><button type="button" class="close" data-dismiss="modal">×</button>'+data+'</div></div>';
+      $(modal).appendTo('body');
+      $('#url-modal').modal('show');
+    });
+  }
+});
+
 var autocomplete = $('input.search-query').typeahead()
   .on('keyup', function(ev){
 
@@ -99,6 +113,7 @@ $('#save-search').click(function(e){
     data: {type: type, query: query},
     dataType: "json",
     success: function(response){
+      $('input.search-query').val('');
 
       var name = response.results.name,
           artist = response.results.artist,
@@ -110,8 +125,8 @@ $('#save-search').click(function(e){
       if( artist.length > 0 )
         new_listing += '<td>'+artist+'</td>';
 
-      new_listing += '<td><a href="'+href+'" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a> '
-      new_listing += '<a href="#" data-remove="'+type+':'+id+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
+      new_listing += '<td><a href="'+href+'" data-id="'+id+'" data-type="'+type+'" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a> '
+      new_listing += '<a href="#" data-id="'+id+'" data-type="'+type+'" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>'
       new_listing += '</td></tr>';
 
       $('#'+type+'-list tbody').append(new_listing);
@@ -133,9 +148,8 @@ $('a[data-remove]').live('click', function(e){
   $('#loading-query').show();
 
   $this = $(this);
-  data = $this.data('remove');
-  type = data.split(':')[0];
-  id = data.split(':')[1];
+  type = $this.data('type');
+  id = $this.data('id');
 
   $.ajax({
     type: "DELETE",
@@ -158,36 +172,22 @@ $('a[data-remove]').live('click', function(e){
   });
 });
 
-$('a[data-toggle="modal"]').click(function(e) {
-  e.preventDefault();
-  var href = $(this).attr('href');
-  if (href.indexOf('#') == 0) {
-    $(href).modal('open');
-  } else {
-    $.get(href, function(data) {
-      modal = '<div class="modal hide" id="url-modal"><div class="modal-body"><button type="button" class="close" data-dismiss="modal">×</button>'+data+'</div></div>';
-      $(modal).appendTo('body');
-      $('#url-modal').modal('show');
-    });
-  }
-});
-
 $('a.play-button').live('click', function(e){
   e.preventDefault();
 
   $this = $(this);
-  uri = $this.attr('href');
-  type = $this.attr('href').split(':')[1];
+  type = $this.data('type');
+  id = $this.data('id');
 
   $.ajax({
     type: "post",
     url: "/listen",
-    data: {type: type, uri: uri},
+    data: {id: id, type: type},
     dataType: "json",
     success: function(response){
       console.log(response.listened_to);
       $this.parents('tr').addClass('listened');
-      window.location = uri;
+      window.location = $this.attr('href');
     },
     error: function(response){
       $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error listening to your "+type+". Please try again in a few moments.</div>");

@@ -12,8 +12,8 @@
       <td><%= data.name %></td>
       <% if defined?(object.first.artist_name) %><td><%= data.artist_name %></td><% end %>
       <td>
-        <a href="<%= data.spotify_uri %>" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a>
-        <a href="#" data-remove="<%= type %>:<%= data.id %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
+        <a href="<%= data.spotify_uri %>" data-id="<%= data.id %>" data-type="<%= type %>" class="btn btn-primary btn-mini play-button"><i class="icon-play icon-white"></i> Play</a>
+        <a href="#" data-id="<%= data.id %>" data-type="<%= type %>" class="btn btn-danger btn-mini"><i class="icon-remove icon-white"></i> Remove</a>
       </td>
     </tr>
     <% end %>
