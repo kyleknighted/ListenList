@@ -48,39 +48,28 @@ var autocomplete = $('input.search-query').typeahead()
 
         self.data('active', true);
 
+        type = $('input[name="search-type"]:checked').val();
+
         //Do data request. Insert your own API logic here.
-        $.getJSON("http://ws.spotify.com/search/1/" + $('input[name="search-type"]:checked').val() + ".json",{
-          q: $(this).val()
+        $.getJSON("/search",{
+          query: $(this).val(), type: type
         }, function(data) {
 
         //set this to true when your callback executes
         self.data('active',true);
 
-
         var arr = [];
 
-        switch ($('input[name="search-type"]:checked').val()) {
-          case 'artist':
-            i = data.artists.length;
-            while(i--){
-              arr[i] = data.artists[i].name
-            }
-            break;
+        console.log(data);
 
-          case 'track':
-            i = data.tracks.length;
-            while(i--){
-              arr[i] = data.tracks[i].name + ' :: ' + data.tracks[i].artists[0].name
-            }
-            break;
-
-          case 'album':
-            i = data.albums.length;
-            while(i--){
-              arr[i] = data.albums[i].name + ' :: ' + data.albums[i].artists[0].name
-            }
-            break;
-        }
+        i = data.length;
+        $.each(data, function(idx, val){
+          if(type == 'album' || type == 'track') {
+            arr[idx] = val.name + ' :: ' + val.artist;
+          } else {
+            arr[idx] = val.name;
+          }
+        });
 
         self.data('typeahead').source = arr;
 
@@ -172,25 +161,25 @@ $('a[data-remove]').live('click', function(e){
   });
 });
 
-$('a.play-button').live('click', function(e){
-  e.preventDefault();
+// $('a.play-button').live('click', function(e){
+//   e.preventDefault();
 
-  $this = $(this);
-  type = $this.data('type');
-  id = $this.data('id');
+//   $this = $(this);
+//   type = $this.data('type');
+//   id = $this.data('id');
 
-  $.ajax({
-    type: "post",
-    url: "/listen",
-    data: {id: id, type: type},
-    dataType: "json",
-    success: function(response){
-      console.log(response.listened_to);
-      $this.parents('tr').addClass('listened');
-      window.location = $this.attr('href');
-    },
-    error: function(response){
-      $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error listening to your "+type+". Please try again in a few moments.</div>");
-    }
-  });
-});
+//   $.ajax({
+//     type: "post",
+//     url: "/listen",
+//     data: {id: id, type: type},
+//     dataType: "json",
+//     success: function(response){
+//       console.log(response.listened_to);
+//       $this.parents('tr').addClass('listened');
+//       window.location = $this.attr('href');
+//     },
+//     error: function(response){
+//       $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> There was an error listening to your "+type+". Please try again in a few moments.</div>");
+//     }
+//   });
+// });

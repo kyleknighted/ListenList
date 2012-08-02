@@ -8,6 +8,13 @@ class MainController < ApplicationController
     end
   end
 
+  def search
+    client = RdioApi.new(:consumer_key => ENV['RDIO_KEY'], :consumer_secret => ENV['RDIO_SECRET'])
+    response = client.searchSuggestions(:query => params[:query], :types => params[:type])
+
+    render :json => response
+  end
+
   def about
     render :layout => false
   end

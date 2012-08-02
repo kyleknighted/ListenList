@@ -9,4 +9,6 @@ ListenList::Application.routes.draw do
   post '/add' => 'main#add'
   post '/listen' => 'main#listen'
   delete '/remove' => 'main#remove'
+
+  get '/search' => 'main#search'
 end
