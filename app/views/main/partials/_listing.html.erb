@@ -1,4 +1,4 @@
-<table id="<%= type %>-list" class="table table-striped <% if object.empty? %>hide<% end %>">
+<table id="<%= type %>-list" class="table table-striped <%= "hide" if object.empty? %>">
   <thead>
     <tr>
       <th><%= type.titleize %></th>
@@ -20,6 +20,6 @@
   </tbody>
 </table>
 
-<div class="alert alert-error <% unless object.empty? %>hide<% end %>" id="<%= type %>-none">
+<div class="alert alert-error <%= "hide" unless object.empty? %>" id="<%= type %>-none">
   <strong>Oh noes!</strong> You haven't added any <%= type.titleize %>s yet!
 </div>
