@@ -13,21 +13,25 @@ class MainController < ApplicationController
   end
 
   def add
-    if ['album', 'track'].include? params[:type]
-      query = params[:query].split(' :: ')[0]
-    else
-      query = params[:query]
-    end
+    type =  params[:type]
+    type_class = type.camelize.constantize
 
-    type_class = params[:type].camelize.constantize
-    created = type_class.create_from_spotify(query)
+    query = ['album', 'track'].include? type ? params[:query].split(' :: ')[0] : params[:query]
 
-    hash = {:name => created[:name], :spotify_uri => created[:spotify_uri], :user_id => current_user.id}
-    hash[:artist_name] = created[:artist] if !created[:artist].empty?
+    response = RestClient.get "http://ws.spotify.com/search/1/#{type}.json", { :params => { :q => query } }
+    json = ActiveSupport::JSON.decode(response)
+
+    name = json["#{type}s"][0]['name']
+    href = json["#{type}s"][0]['href']
+    artist = json["#{type}s"][0]['artists'] ? json["#{type}s"][0]['artists'][0]['name'] : ''
+
+    hash = {:name => name, :spotify_uri => href, :user_id => current_user.id}
+    hash[:artist_name] = artist unless artist.empty?
+
     new_data = type_class.new(hash)
 
     if new_data.save
-      render :json => { :results => { :name => created[:name], :artist => created[:artist], :href => created[:spotify_uri] }, :id => new_data.id }
+      render :json => { :results => { :name => name, :artist => artist, :href => href }, :id => new_data.id }
     end
   end
 
