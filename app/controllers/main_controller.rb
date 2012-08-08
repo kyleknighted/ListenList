@@ -1,5 +1,7 @@
 class MainController < ApplicationController
 
+  require 'spotify'
+
   def index
     if current_user
       @artists = current_user.artists
@@ -20,14 +22,14 @@ class MainController < ApplicationController
     end
 
     type_class = params[:type].camelize.constantize
-    created = type_class.create_from_spotify(query)
+    created = type_class.create_from_spotify(params[:type], query)
 
-    hash = {:name => created[:name], :spotify_uri => created[:spotify_uri], :user_id => current_user.id}
+    hash = {:name => created[:name], :spotify_uri => created[:href], :user_id => current_user.id}
     hash[:artist_name] = created[:artist] if !created[:artist].empty?
     new_data = type_class.new(hash)
 
     if new_data.save
-      render :json => { :results => { :name => created[:name], :artist => created[:artist], :href => created[:spotify_uri] }, :id => new_data.id }
+      render :json => { :results => { :name => created[:name], :artist => created[:artist], :href => created[:href] }, :id => new_data.id }
     end
   end
 
