@@ -15,7 +15,10 @@ class MainController < ApplicationController
   end
 
   def add
-    if ['album', 'track'].include? params[:type]
+    type =  params[:type]
+    type_class = type.camelize.constantize
+
+    if ['album', 'track'].include? type
       query = params[:query].split(' :: ')[0]
     else
       query = params[:query]
