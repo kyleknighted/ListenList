@@ -9,6 +9,12 @@
 
   <%= yield %>
 
+  <div class="modal hide" id="url-modal">
+    <div class="modal-body">
+      <button type="button" class="close" data-dismiss="modal">×</button>
+    </div>
+  </div>
+
   <%= javascript_include_tag "application" %>
 </body>
 </html>
