@@ -1,3 +1,4 @@
+// submitting clicks via ajax - write once, reuse
 function submitAjax(method, action, varArray, successFunction) {
   $.ajax({
     type: method,
@@ -13,26 +14,28 @@ function submitAjax(method, action, varArray, successFunction) {
   });
 }
 
+// adding data successful
 function successAdd(response, varArray) {
   $('input.search-query').val('');
 
-    var name = response.results.name,
-        artist = response.results.artist,
-        href = response.results.href,
-        id = response.id;
+  var name = response.results.name,
+      artist = response.results.artist,
+      href = response.results.href,
+      id = response.id;
 
-    newListing = generateMarkup(name, artist, href, id, varArray['type']);
+  newListing = generateMarkup(name, artist, href, id, varArray['type']);
 
-    $('#'+varArray['type']+'-list tbody').append(newListing);
+  $('#'+varArray['type']+'-list tbody').append(newListing);
 
-    if( $('#'+varArray['type']+'-list').hasClass('hide') ){
-      $('#'+varArray['type']+'-list').removeClass('hide');
-      $('#'+varArray['type']+'-none').addClass('hide');
-    }
+  if( $('#'+varArray['type']+'-list').hasClass('hide') ){
+    $('#'+varArray['type']+'-list').removeClass('hide');
+    $('#'+varArray['type']+'-none').addClass('hide');
+  }
 
-    $('#loading-query').hide();
+  $('#loading-query').hide();
 }
 
+// deleting data is successful
 function successDelete(response, varArray) {
   varArray['this'].parents('tr').fadeOut(400, function(){
     varArray['this'].parents('tr').remove();
@@ -44,11 +47,13 @@ function successDelete(response, varArray) {
   });
 }
 
+// playing data is successful
 function successPlay(response, varArray) {
   varArray['this'].parents('tr').addClass('listened');
   window.location = varArray['this'].attr('href');
 }
 
+// generate markup for ADD
 function generateMarkup(name, artist, href, id, type) {
   newListing = '<tr><td>'+name+'</td>';
 
@@ -61,6 +66,7 @@ function generateMarkup(name, artist, href, id, type) {
   return newListing
 }
 
+// generate markup for any type of error
 function generateError(message) {
   $('#spotify-search').after("<div class=\"alert\"><button class=\"close\" data-dismiss=\"alert\">×</button><strong>Warning!</strong> "+message+"</div>");
 }

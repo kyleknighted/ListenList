@@ -1,12 +1,3 @@
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
-//
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
@@ -17,7 +8,10 @@
 //= require bootstrap-alert
 //= require functions
 
+// TODO: Figure out why the $('#loading-query') refuses to show/hide during calls and callbacks
+
 $(function(){
+  // Setup modal box for About page information
   $('a[data-toggle="modal"]').click(function(e) {
     e.preventDefault();
     $.get($(this).attr('href'), function(data) {
@@ -26,60 +20,28 @@ $(function(){
     });
   });
 
-  var autocomplete = $('input.search-query').typeahead()
-    .on('keyup', function(e){
+  $('input.search-query').typeahead().on('keyup', function(e){
+    e.stopPropagation();
+    e.preventDefault();
 
-      e.stopPropagation();
-      e.preventDefault();
+    //filter out up/down, tab, enter, and escape keys
+    if( $.inArray(e.keyCode,[40,38,9,13,27,91,18,17,16]) === -1 ){
 
-      //filter out up/down, tab, enter, and escape keys
-      if( $.inArray(e.keyCode,[40,38,9,13,27]) === -1 ){
+      var self = $(this)
+          type = $('input[name="search-type"]:checked').val();
+      $('#loading-query').show();
 
-        var self = $(this);
-        $('#loading-query').show();
+      self.data('typeahead').source = [];
 
-        self.data('typeahead').source = [];
+      //active used so we aren't triggering duplicate keyup events
+      if( !self.data('active') && self.val().length > 0){
 
-        //active used so we aren't triggering duplicate keyup events
-        if( !self.data('active') && self.val().length > 0){
+        self.data('active', true);
 
-          self.data('active', true);
-
-          //Do data request. Insert your own API logic here.
-          $.getJSON("http://ws.spotify.com/search/1/" + $('input[name="search-type"]:checked').val() + ".json",{
-            q: $(this).val()
-          }, function(data) {
-
-          //set this to true when your callback executes
-          self.data('active',true);
-
-
-          var resultArray = [];
-
-          switch ($('input[name="search-type"]:checked').val()) {
-            case 'artist':
-              i = data.artists.length;
-              while(i--){
-                resultArray[i] = data.artists[i].name
-              }
-              break;
-
-            case 'track':
-              i = data.tracks.length;
-              while(i--){
-                resultArray[i] = data.tracks[i].name + ' :: ' + data.tracks[i].artists[0].name
-              }
-              break;
-
-            case 'album':
-              i = data.albums.length;
-              while(i--){
-                resultArray[i] = data.albums[i].name + ' :: ' + data.albums[i].artists[0].name
-              }
-              break;
-          }
-
-          self.data('typeahead').source = resultArray;
+        // Request value from Spotify
+        $.getJSON("/search",{ query: $(this).val(), type: type }, function(data) {
+          // get returned array and append to data source
+          self.data('typeahead').source = data;
 
           //trigger keyup on the typeahead to make it search
           self.trigger('keyup');
@@ -89,15 +51,17 @@ $(function(){
           $('#loading-query').hide();
 
         });
-
       }
     }
   });
 
+  // Update "Search" button to correct verbiage
   $('input[name="search-type"]').change(function(){
     $('#save-search').text('Save ' + $(this).val());
   });
 
+  // Save Search Clicking - adds track/artist/album to database
+  // TODO: Accept "Enter" key as valid submittal option
   $('#save-search').click(function(e){
     e.preventDefault();
     $('#loading-query').show();
@@ -117,6 +81,8 @@ $(function(){
     submitAjax('post', '/add', varArray, successAdd);
   });
 
+  // Delete and Play button functionality is very similiar
+  // Adding both together with simple `if` statement
   $('a.delete-button, a.play-button').on('click', function(e){
     e.preventDefault();
     $('#loading-query').show();

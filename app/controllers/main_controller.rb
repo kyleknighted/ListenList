@@ -14,6 +14,22 @@ class MainController < ApplicationController
     render :layout => false
   end
 
+  def search
+    type = params[:type]
+    output = []
+    response = RestClient.get "http://ws.spotify.com/search/1/#{type}.json", { params: { q: params[:query] } }
+    if response and json = ActiveSupport::JSON.decode(response)
+      json[type.pluralize].each do |data|
+        if type == 'track' or type == 'album'
+          output.push("#{data['name']} :: #{data['artists'][0]['name']}")
+        else
+          output.push("#{data['name']}")
+        end
+      end
+      render :json => output
+    end
+  end
+
   def add
     type =  params[:type]
     type_class = type.camelize.constantize
