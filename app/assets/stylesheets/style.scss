@@ -36,5 +36,7 @@ table {
 }
 #loading-query {
   -webkit-animation:spin 1.5s infinite linear;
-  display: none;
+  // display: block;
+  width: 15px;
+  height: 15px;
 }

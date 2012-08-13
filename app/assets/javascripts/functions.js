@@ -32,7 +32,7 @@ function successAdd(response, varArray) {
     $('#'+varArray['type']+'-none').addClass('hide');
   }
 
-  $('#loading-query').hide();
+  $('#loading-query').addClass('hide');
 }
 
 // deleting data is successful
@@ -43,7 +43,7 @@ function successDelete(response, varArray) {
       $('#'+varArray['type']+'-list').addClass('hide');
       $('#'+varArray['type']+'-none').removeClass('hide');
     }
-    $('#loading-query').hide();
+    $('#loading-query').addClass('hide');
   });
 }
 
