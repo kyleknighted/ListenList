@@ -19,7 +19,7 @@ gem 'jquery-rails', "~> 2.0.2"
 
 gem 'thin', "~> 1.4.1"
 gem "bootstrap-sass", "~> 2.0.4.0"
-gem "omniauth", "~> 1.1.0"
+gem "omniauth", "~> 1.4.2"
 gem "omniauth-twitter", "~> 0.0.12"
 gem "formtastic", "~> 2.2.1"
 gem "oauth", "~> 0.4.6"
